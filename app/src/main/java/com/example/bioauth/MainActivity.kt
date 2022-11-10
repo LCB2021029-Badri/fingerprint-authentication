@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     //checking boimetric support
     private fun checkBiometricSupport():Boolean{
         val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        if(keyguardManager.isKeyguardSecure){
+        if(!keyguardManager.isKeyguardSecure){
             notifyUser("FingePrint authentication is not enabled")
             return false
         }
@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         cancellationSignal?.setOnCancelListener {
             notifyUser("Authentication was cancelled by the user")
         }
+        return cancellationSignal as CancellationSignal
     }
 
     //just simple toast
