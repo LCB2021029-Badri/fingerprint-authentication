@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".SecondActivity">
 
-    <Button
-        android:id="@+id/btn_authenticationb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="authentication"
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="268dp"
+        android:layout_height="41dp"
+        android:text="this is a secret second activity\nwhich can only be accessed by fingerprint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
