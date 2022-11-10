@@ -2,6 +2,7 @@ package com.example.bioauth
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.biometrics.BiometricPrompt
@@ -12,11 +13,15 @@ import android.os.CancellationSignal
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import com.example.bioauth.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var binding: ActivityMainBinding
+
     private var cancellationSignal: CancellationSignal? = null
 
+    //while authentication (during the time of authentication)
     private val authenticationCallback: BiometricPrompt.AuthenticationCallback get() =
         @RequiresApi(Build.VERSION_CODES.P)
         object : BiometricPrompt.AuthenticationCallback(){
@@ -34,11 +39,27 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         //checking of biometeric eists in the system or not
         checkBiometricSupport()
+
+        //setting thebutton\
+        binding.btnAuthenticationb.setOnClickListener {
+            val biometricPrompt = BiometricPrompt.Builder(this)
+                .setTitle("Secret")
+                .setSubtitle("Authentication is required")
+                .setDescription("This app uses fingerprint protection to keep your data secure")
+                .setNegativeButton("cancel",this.mainExecutor,DialogInterface.OnClickListener { dialogInterface, i ->
+                    notifyUser("Authentication cancelled")
+                }).build()
+
+            biometricPrompt.authenticate(getCancellationSignal(),mainExecutor,authenticationCallback)
+        }
+
     }
 
     //checking boimetric support
@@ -61,7 +82,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //on cancelled
-    private fun onCancellationSignal() : CancellationSignal{
+    private fun getCancellationSignal() : CancellationSignal{
         cancellationSignal = CancellationSignal()
         cancellationSignal?.setOnCancelListener {
             notifyUser("Authentication was cancelled by the user")
